@@ -38,26 +38,36 @@ Instructions: Homebrew
 
 #### Install dependencies using Homebrew
 
-        brew install autoconf automake berkeley-db4 libtool boost miniupnpc openssl pkg-config protobuf qt5
+        brew install autoconf automake berkeley-db@4 git libevent libtool boost@1.57 miniupnpc openssl pkg-config protobuf qt5 zeromq librsvg
 
 ### Building `atheneumd`
 
 1. Clone the github tree to get the source code and go into the directory.
 
         git clone https://github.com/AtheneumChain/Atheneum.git
-        cd AEM
+        cd Atheneum
 
-2.  Build atheneumd:
+2. We need a specific version of boost to build the current Atheneum wallet, and now that it's installed, we need to link it:
+
+        brew link boost@1.57 --force
+
+3. Make the Homebrew OpenSSL and Qt headers visible to the configure script.
+
+        export LDFLAGS="-L/usr/local/opt/openssl/lib -L/usr/local/opt/qt/lib"
+        export CPPFLAGS="-I/usr/local/opt/openssl/include -I/usr/local/opt/qt/include"
+
+4.  Build atheneumd:
 
         ./autogen.sh
         ./configure --with-gui=qt5
         make
+        make deploy
 
-3.  It is also a good idea to build and run the unit tests:
+5.  It is also a good idea to build and run the unit tests:
 
         make check
 
-4.  (Optional) You can also install atheneumd to your path:
+6.  (Optional) You can also install atheneumd to your path:
 
         make install
 
@@ -104,14 +114,14 @@ directory. We have to first create the RPC configuration file, though.
 Run `./atheneumd` to get the filename where it should be put, or just try these
 commands:
 
-    echo -e "rpcuser=atheneumrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/AEM/atheneum.conf"
-    chmod 600 "/Users/${USER}/Library/Application Support/AEM/atheneum.conf"
+    echo -e "rpcuser=atheneumrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/Atheneum/atheneum.conf"
+    chmod 600 "/Users/${USER}/Library/Application Support/Atheneum/atheneum.conf"
 
 The next time you run it, it will start downloading the blockchain, but it won't
 output anything while it's doing this. This process may take several hours;
 you can monitor its process by looking at the debug.log file, like this:
 
-    tail -f $HOME/Library/Application\ Support/AEM/debug.log
+    tail -f $HOME/Library/Application\ Support/Atheneum/debug.log
 
 Other commands:
 -------
